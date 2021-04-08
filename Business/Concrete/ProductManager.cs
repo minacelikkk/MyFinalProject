@@ -33,15 +33,12 @@ namespace Business.Concrete
         }
 
         
-        //Claim
-        [SecuredOperation("product.add,admin")]
+        //[SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         [CacheRemoveAspect("IProductService.Get")]
         public IResult Add(Product product)
         {
 
-            //Aynı isimde ürün eklenemez
-            //Eğer mevcut kategori sayısı 15'i geçtiyse sisteme yeni ürün eklenemez. ve 
             IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName), 
                 CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceded());
 
@@ -57,7 +54,7 @@ namespace Business.Concrete
         }
 
 
-        [CacheAspect] //key,value
+        [CacheAspect]
         public IDataResult<List<Product>> GetAll()
         {
             if (DateTime.Now.Hour == 1)
@@ -74,7 +71,7 @@ namespace Business.Concrete
         }
 
         [CacheAspect]
-        //[PerformanceAspect(5)]
+        
         public IDataResult<Product> GetById(int productId)
         {
             return new SuccessDataResult<Product>(_productDal.Get(p => p.ProductId == productId));
